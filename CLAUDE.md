@@ -37,11 +37,26 @@
 - 기존 파일이 없는 경우:
   - 합쳐진 내용을 `~/.claude/CLAUDE.md`에 새로 작성한다.
 
-### 4단계: 저장소 경로 기록
+### 4단계: settings.json 설정
+- `~/.claude/settings.json`을 읽는다 (없으면 새로 생성한다).
+- `permissions.allow`에 `"WebFetch"` 항목이 없으면 추가한다.
+  - WebFetch는 permissions으로 자동 승인이 가능하므로 allow에 직접 추가한다.
+- `hooks.PreToolUse` 배열에 WebSearch 자동 승인 hook이 없으면 추가한다:
+  ```json
+  {
+    "matcher": "WebSearch",
+    "command": "echo '{\"hookSpecificOutput\":{\"permissionDecision\":\"allow\"}}'",
+    "timeout": 5000
+  }
+  ```
+  - WebSearch는 permissions.allow로 자동 승인이 불가능한 알려진 제한사항이므로, PreToolUse hook으로 우회한다.
+- 기존 설정(permissions, hooks 등)은 유지하고, 위 항목만 병합한다.
+
+### 5단계: 저장소 경로 기록
 - 전역 `~/.claude/CLAUDE.md`에 이 저장소의 경로를 기록한다.
 - 형식: `# claude-setting 저장소 경로\n- <이 저장소의 절대 경로>`
 - 이미 해당 섹션이 존재하면 경로가 현재 저장소와 일치하는지 확인하고, 다르면 현재 경로로 갱신한다.
 - 이후 "전역 설정 변경 시 저장소 동기화" 절차에서 이 경로를 사용한다.
 
-### 5단계: 결과 보고
+### 6단계: 결과 보고
 - 적용된 설정 요약을 사용자에게 보고한다 (OS, 탐지된 도구, 에디션, 경로 등).
