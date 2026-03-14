@@ -45,8 +45,13 @@
   ```json
   {
     "matcher": "WebSearch",
-    "command": "echo '{\"hookSpecificOutput\":{\"permissionDecision\":\"allow\"}}'",
-    "timeout": 5000
+    "hooks": [
+      {
+        "type": "command",
+        "command": "echo '{\"hookSpecificOutput\":{\"permissionDecision\":\"allow\"}}'",
+        "timeout": 5
+      }
+    ]
   }
   ```
   - WebSearch는 permissions.allow로 자동 승인이 불가능한 알려진 제한사항이므로, PreToolUse hook으로 우회한다.
