@@ -48,13 +48,14 @@
     "hooks": [
       {
         "type": "command",
-        "command": "echo '{\"hookSpecificOutput\":{\"permissionDecision\":\"allow\"}}'",
+        "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\"}}'",
         "timeout": 5
       }
     ]
   }
   ```
   - WebSearch는 permissions.allow로 자동 승인이 불가능한 알려진 제한사항이므로, PreToolUse hook으로 우회한다.
+  - `hookSpecificOutput`에 `hookEventName` 필드가 없으면 hook이 동작하지 않으므로 반드시 포함할 것.
 - 기존 설정(permissions, hooks 등)은 유지하고, 위 항목만 병합한다.
 
 ### 5단계: 저장소 경로 기록
