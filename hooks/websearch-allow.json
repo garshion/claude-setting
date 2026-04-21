@@ -1,0 +1,11 @@
+{
+  "event": "PreToolUse",
+  "matcher": "WebSearch",
+  "hooks": [
+    {
+      "type": "command",
+      "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\"}}'",
+      "timeout": 5
+    }
+  ]
+}
