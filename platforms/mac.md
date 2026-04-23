@@ -121,3 +121,13 @@
 
 - **기본 설치 (LTS)**: `brew install --cask dotnet-sdk`
 - 특정 버전이 필요하면 공식 installer (.pkg) 사용을 안내한다.
+
+## Mono
+
+Unity 프로젝트를 VSCode 등에서 디버깅할 때 필요하다. Unity 가 번들하는 Mono 런타임과 별개로, IDE 의 디버거가 호스트 시스템의 Mono MDK 를 요구하는 경우가 있다.
+
+- **기본 설치**: `brew install --cask mono-mdk`
+  - cask 이름은 `mono-mdk` (MDK = Mono Development Kit). Unity/VSCode 디버깅 용도는 이 패키지가 표준이다.
+  - macOS 10.15 이상 필요.
+- **`mono` formula 와의 충돌**: `mono-mdk` 설치 시 `/usr/local/bin` (또는 `$(brew --prefix)/bin`) 의 `mono` formula 바이너리가 제거되고 `/private/etc/paths.d/mono-commands` 가 추가된다. 기존에 `brew install mono` 로 formula 버전을 사용 중이었다면 설치 전 사용자에게 고지한다.
+- **Visual Studio for Mac 용 별도 cask**: `mono-mdk-for-visual-studio` 는 VS for Mac 전용 변형이며, Unity/VSCode 목적에는 `mono-mdk` 를 사용한다.
