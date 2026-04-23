@@ -51,7 +51,7 @@
 - 전역 `~/.claude/CLAUDE.md`에 이 저장소의 경로를 기록한다.
 - 형식: `# claude-setting 저장소 경로\n- <이 저장소의 절대 경로>`
 - 이미 해당 섹션이 존재하면 경로가 현재 저장소와 일치하는지 확인하고, 다르면 현재 경로로 갱신한다.
-- 이후 "전역 설정 변경 시 저장소 동기화" 절차에서 이 경로를 사용한다.
+- 사용자가 지침 편집을 요청할 때 이 경로를 통해 저장소 위치를 찾는다.
 
 ### 6단계: Skills/Commands 설치
 - 저장소 `skills/` 디렉토리의 각 하위 디렉토리를 `~/.claude/skills/<skill-name>/` 에 설치한다.
@@ -150,14 +150,12 @@
     "<skill-name>": {
       "files": {
         "<상대 경로>": "<sha256>"
-      },
-      "installed_at": "<ISO 8601 UTC>"
+      }
     }
   },
   "commands": {
     "<command-name>": {
-      "hash": "<sha256>",
-      "installed_at": "<ISO 8601 UTC>"
+      "hash": "<sha256>"
     }
   }
 }
@@ -255,8 +253,7 @@ skill의 각 내부 파일 또는 command 단일 파일에 대해:
   "<name>": {
     "event": "PreToolUse",
     "matcher": "WebSearch",
-    "hash": "<sha256>",
-    "installed_at": "<ISO 8601 UTC>"
+    "hash": "<sha256>"
   }
 }
 ```
@@ -345,8 +342,7 @@ skill의 각 내부 파일 또는 command 단일 파일에 대해:
       "allow": ["WebFetch"],
       "deny": [],
       "ask": []
-    },
-    "installed_at": "<ISO 8601 UTC>"
+    }
   }
 }
 ```
@@ -449,24 +445,20 @@ skill의 각 내부 파일 또는 command 단일 파일에 대해:
 {
   "claudeMdAggregator": {
     "path": "claude-setting.md",
-    "hash": "<sha256>",
-    "installed_at": "<ISO 8601 UTC>"
+    "hash": "<sha256>"
   },
   "imports": {
     "common.md": {
       "target": "imports/claude-setting/common.md",
-      "hash": "<sha256>",
-      "installed_at": "<ISO 8601 UTC>"
+      "hash": "<sha256>"
     },
     "platforms/windows.md": {
       "target": "imports/claude-setting/platforms/windows.md",
-      "hash": "<sha256>",
-      "installed_at": "<ISO 8601 UTC>"
+      "hash": "<sha256>"
     },
     "tools/vs2026.md": {
       "target": "imports/claude-setting/tools/vs2026.md",
-      "hash": "<sha256-치환-완료본-기준>",
-      "installed_at": "<ISO 8601 UTC>"
+      "hash": "<sha256-치환-완료본-기준>"
     }
   }
 }
