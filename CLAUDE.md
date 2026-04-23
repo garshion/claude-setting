@@ -29,41 +29,48 @@
 - 탐지된 도구의 에디션/경로 정보로 `{{에디션}}` 등의 플레이스홀더를 치환한다.
 - 여러 버전이 발견되면 사용자에게 어떤 것을 사용할지 확인한다.
 
-### 3단계: CLAUDE.md 모듈 설치
+### 3단계: 환경 탐지
+- 선택된 `platforms/<os>.md` 의 "환경 탐지 대상" 섹션을 참고하여 `python`, `node`, 셸 등 스크립팅/런타임 툴의 설치 여부와 호출 방법을 탐지한다.
+- Windows 에서는 네이티브 탐지 실패 시 WSL 탐지를 시도한다(WSL 이 없으면 건너뜀).
+- MSBuild 등 다른 설정 파일에서 이미 탐지되는 항목은 포인터로만 기록한다(중복 탐지 금지).
+- 상세 규칙은 이 문서 하단의 "환경 탐지 세부 규칙" 을 따른다. 탐지 결과는 4단계에서 `~/.claude/imports/claude-setting/environment.md` 로 기록된다.
+
+### 4단계: CLAUDE.md 모듈 설치
 - 공통/플랫폼/도구별 지침을 연결(concat)하지 않고, `@` 임포트로 모듈화하여 설치한다.
 - 설치 대상 구조:
   - `~/.claude/imports/claude-setting/common.md` ← 저장소 `common.md` 복사
   - `~/.claude/imports/claude-setting/platforms/<os>.md` ← 저장소 `platforms/<os>.md` 복사
+  - `~/.claude/imports/claude-setting/environment.md` ← 3단계 환경 탐지 결과로 동적 생성
   - `~/.claude/imports/claude-setting/tools/<tool>.md` ← 저장소 `tools/<tool>.md` 의 플레이스홀더 치환 완료본
   - `~/.claude/claude-setting.md` ← 저장소가 전담 관리하는 임포트 집약 파일
   - `~/.claude/CLAUDE.md` ← 사용자 파일. `@claude-setting.md` 한 줄만 보장, 그 외는 사용자 소유.
 - 상세 규칙은 이 문서 하단의 "CLAUDE.md 모듈 설치 세부 규칙" 을 따른다.
 - 기존 연결(concat) 방식으로 설치된 `~/.claude/CLAUDE.md` 가 감지되면 "전환 절차" 에 따라 사용자에게 모듈화 전환을 제안한다.
 
-### 4단계: 저장소 경로 기록
+### 5단계: 저장소 경로 기록
 - 전역 `~/.claude/CLAUDE.md`에 이 저장소의 경로를 기록한다.
 - 형식: `# claude-setting 저장소 경로\n- <이 저장소의 절대 경로>`
 - 이미 해당 섹션이 존재하면 경로가 현재 저장소와 일치하는지 확인하고, 다르면 현재 경로로 갱신한다.
 - 이후 "전역 설정 변경 시 저장소 동기화" 절차에서 이 경로를 사용한다.
 
-### 5단계: Skills/Commands 설치
+### 6단계: Skills/Commands 설치
 - 저장소 `skills/` 디렉토리의 각 하위 디렉토리를 `~/.claude/skills/<skill-name>/` 에 설치한다.
 - 저장소 `commands/` 디렉토리의 각 `<name>.md` 파일을 `~/.claude/commands/<name>.md` 에 설치한다.
 - 설치 대상/매니페스트 처리/충돌 확인 등 상세 규칙은 이 문서 하단의 "Skills/Commands 설치 세부 규칙"을 따른다.
 - `README.md` 등 설치 대상이 아닌 파일은 제외한다 (상세 규칙 참조).
 
-### 6단계: Hooks 설치
+### 7단계: Hooks 설치
 - 저장소 `hooks/` 디렉토리의 각 `<name>.json` 파일을 `~/.claude/settings.json` 의 `hooks` 섹션에 병합한다.
 - 상세 규칙은 이 문서 하단의 "Hooks 설치 세부 규칙"을 따른다.
 - `README.md` 등 설치 대상이 아닌 파일은 제외한다 (상세 규칙 참조).
 
-### 7단계: Permissions 설치
+### 8단계: Permissions 설치
 - 저장소 `permissions/` 디렉토리의 각 `<name>.json` 파일의 항목들을 `~/.claude/settings.json` 의 `permissions.allow` / `permissions.deny` / `permissions.ask` 배열에 병합한다.
 - 상세 규칙은 이 문서 하단의 "Permissions 설치 세부 규칙"을 따른다.
 - `README.md` 등 설치 대상이 아닌 파일은 제외한다 (상세 규칙 참조).
 
-### 8단계: 결과 보고
-- 적용된 설정 요약을 사용자에게 보고한다 (OS, 탐지된 도구, 에디션, 경로, 설치/갱신된 skill·command·hook·permission 개수 등).
+### 9단계: 결과 보고
+- 적용된 설정 요약을 사용자에게 보고한다 (OS, 탐지된 도구, 에디션, 경로, 탐지된 환경 툴, 설치/갱신된 skill·command·hook·permission 개수 등).
 
 ## 업데이트 절차
 
@@ -77,28 +84,49 @@
 - 파일이 없으면 업데이트 대상이 없으므로, 설치 절차를 먼저 실행하라고 안내한다.
 
 ### 2단계: CLAUDE.md 모듈 갱신
-- 설치 절차 3단계와 동일하게 `~/.claude/imports/claude-setting/` 의 개별 임포트 파일과 `~/.claude/claude-setting.md` 를 갱신한다.
+- 설치 절차 4단계와 동일하게 `~/.claude/imports/claude-setting/` 의 개별 임포트 파일과 `~/.claude/claude-setting.md` 를 갱신한다.
 - 상세 규칙은 "CLAUDE.md 모듈 설치 세부 규칙" 을 따른다.
+- `environment.md` 가 존재하지 않으면 설치 절차 3단계에 준해 환경 탐지를 수행하여 새로 생성한다. 이미 존재하면 건드리지 않는다(명시적 "툴 상황 업데이트해줘" 요청 시에만 재작성; "환경 탐지 갱신 절차" 참조).
 - 기존 연결(concat) 방식이 감지되면 "전환 절차" 를 사용자에게 제안한다.
 
 ### 3단계: Skills/Commands 갱신
-- 설치 절차의 5단계와 동일하게 `skills/`, `commands/` 소스를 `~/.claude/skills/`, `~/.claude/commands/` 에 반영한다.
+- 설치 절차의 6단계와 동일하게 `skills/`, `commands/` 소스를 `~/.claude/skills/`, `~/.claude/commands/` 에 반영한다.
 - 상세 규칙은 "Skills/Commands 설치 세부 규칙" 을 따른다.
 
 ### 4단계: Hooks 갱신
-- 설치 절차의 6단계와 동일하게 `hooks/` 소스를 `~/.claude/settings.json` 의 `hooks` 섹션에 반영한다.
+- 설치 절차의 7단계와 동일하게 `hooks/` 소스를 `~/.claude/settings.json` 의 `hooks` 섹션에 반영한다.
 - 상세 규칙은 "Hooks 설치 세부 규칙" 을 따른다.
 
 ### 5단계: Permissions 갱신
-- 설치 절차의 7단계와 동일하게 `permissions/` 소스를 `~/.claude/settings.json` 의 `permissions` 섹션에 반영한다.
+- 설치 절차의 8단계와 동일하게 `permissions/` 소스를 `~/.claude/settings.json` 의 `permissions` 섹션에 반영한다.
 - 상세 규칙은 "Permissions 설치 세부 규칙" 을 따른다.
 
 ### 6단계: 결과 보고
 - 변경된 내용을 요약하여 사용자에게 보고한다 (갱신된 skill·command·hook·permission 포함). 변경사항이 없으면 "이미 최신 상태"임을 안내한다.
 
+## 환경 탐지 갱신 절차
+
+사용자가 "툴 상황 업데이트해줘", "환경 재탐지", "환경 갱신해줘" 등 **환경 정보만** 갱신하도록 명시적으로 요청하면 본 절차를 수행한다. 전체 업데이트 절차와 구분되며 Skills/Commands, Hooks, Permissions 는 건드리지 않는다.
+
+### 1단계: OS 확인
+- 현재 시스템의 OS 를 확인하여 `platforms/<os>.md` 를 선택한다. 기존 설치 상태에서 OS 정보를 가져와도 무방하다.
+
+### 2단계: 환경 탐지
+- 선택된 플랫폼 파일의 "환경 탐지 대상" 섹션의 탐지 명령을 실행하여 각 툴의 설치 여부·호출명·버전을 수집한다.
+- 명령 미발견(`command not found`, `is not recognized` 등)은 조용히 "사용 불가" 로 분류한다.
+- Windows 에서 네이티브 탐지 실패 시 WSL 탐지를 시도한다(WSL 미설치 시 건너뜀).
+- MSBuild 등 포인터 대상은 별도 탐지하지 않고 `tools/*.md` 설치 결과를 참조한다.
+
+### 3단계: environment.md 재작성
+- "환경 탐지 세부 규칙" 의 포맷에 따라 `~/.claude/imports/claude-setting/environment.md` 를 **전체 재작성** 한다.
+- 기존 파일이 사용자 편집본이더라도 덮어쓴다(로컬 동적 생성물 원칙). 덮어쓰기 전 사용자에게 "재작성됨" 을 고지한다.
+
+### 4단계: 결과 보고
+- 이전 결과와 비교하여 새로 발견된 툴, 사라진 툴, 버전 변경 사항을 요약해 보고한다. 최초 실행 시에는 탐지된 전체 목록을 보고한다.
+
 ## Skills/Commands 설치 세부 규칙
 
-설치 절차 6단계 및 업데이트 절차 4단계의 공통 규칙이다.
+설치 절차 6단계 및 업데이트 절차 3단계의 공통 규칙이다.
 
 ### 설치 대상
 
@@ -179,7 +207,7 @@ skill의 각 내부 파일 또는 command 단일 파일에 대해:
 
 ## Hooks 설치 세부 규칙
 
-설치 절차 7단계 및 업데이트 절차 5단계의 공통 규칙이다.
+설치 절차 7단계 및 업데이트 절차 4단계의 공통 규칙이다.
 
 ### 설치 대상
 
@@ -272,7 +300,7 @@ skill의 각 내부 파일 또는 command 단일 파일에 대해:
 
 ## Permissions 설치 세부 규칙
 
-설치 절차 7단계 및 업데이트 절차 5단계의 공통 규칙이다.
+설치 절차 8단계 및 업데이트 절차 5단계의 공통 규칙이다.
 
 ### 설치 대상
 
@@ -355,7 +383,7 @@ skill의 각 내부 파일 또는 command 단일 파일에 대해:
 
 ## CLAUDE.md 모듈 설치 세부 규칙
 
-설치 절차 3단계 및 업데이트 절차 2단계의 공통 규칙이다.
+설치 절차 4단계 및 업데이트 절차 2단계의 공통 규칙이다.
 
 ### 설치 구조 (두 단계 임포트)
 
@@ -366,6 +394,7 @@ skill의 각 내부 파일 또는 command 단일 파일에 대해:
 └── imports/
     └── claude-setting/
         ├── common.md                     common.md 원본 복사
+        ├── environment.md                장비별 환경 탐지 결과 (동적 생성, 저장소 원본 없음)
         ├── platforms/
         │   └── <os>.md                   선택된 플랫폼 파일 원본 복사
         └── tools/
@@ -399,10 +428,12 @@ skill의 각 내부 파일 또는 command 단일 파일에 대해:
 
 @imports/claude-setting/common.md
 @imports/claude-setting/platforms/<os>.md
+@imports/claude-setting/environment.md
 @imports/claude-setting/tools/<tool>.md
 ```
 
-- 임포트 순서는 `common` → `platforms/<os>` → `tools/<tool>` (기존 연결 순서와 동일).
+- 임포트 순서는 `common` → `platforms/<os>` → `environment` → `tools/<tool>`.
+- `environment.md` 는 장비별 생성물이지만 집약 파일에는 고정 라인으로 포함한다. 파일이 없으면 Claude Code 가 경고할 수 있으므로 설치 시점에 반드시 함께 생성한다.
 - 도구/플랫폼이 여러 개 선택된 경우 각각 한 줄씩.
 
 ### 플레이스홀더 치환
@@ -490,3 +521,67 @@ skill의 각 내부 파일 또는 command 단일 파일에 대해:
 - 경로 구분자는 OS별로 적절히 처리. 매니페스트에는 POSIX 슬래시로 통일 기록.
 - 파일 복사 시 줄바꿈 변환을 수행하지 않고 소스 바이트 그대로 복사(플레이스홀더 치환 뒤 바이트).
 - `@` 임포트 라인은 **POSIX 슬래시**(`@imports/claude-setting/...`)로 작성. Windows 환경에서도 Claude Code 는 이를 해석함.
+
+## 환경 탐지 세부 규칙
+
+설치 절차 3단계(환경 탐지) 및 "환경 탐지 갱신 절차" 의 공통 규칙이다.
+
+### 설치 대상
+
+| 소스 | 설치 대상 |
+| --- | --- |
+| 플랫폼별 탐지 결과 (동적 생성) | `~/.claude/imports/claude-setting/environment.md` |
+
+- 저장소에 원본 소스 파일이 존재하지 않는다. 매 실행 시 탐지 결과를 기반으로 **전체 재작성** 한다.
+- `claude-setting.md` 집약 파일에 `@imports/claude-setting/environment.md` 임포트 라인이 포함된다.
+
+### environment.md 포맷
+
+```markdown
+# 환경 탐지 결과
+
+본 문서는 현재 장비의 환경 탐지 결과입니다. "툴 상황 업데이트해줘" 요청 시 재작성됩니다.
+
+## 사용 가능 툴
+
+- **Python**: `python` — Python 3.12.1
+- **Node.js**: `node` — v20.11.0
+- **PowerShell**: `pwsh` — 7.4.1
+- **.NET SDK**: `dotnet` — 8.0.100
+
+## 사용 불가 툴
+
+- **<툴명>**: 설치되어 있지 않음
+
+## WSL 경유 (Windows 전용)
+
+- **<툴명>**: `wsl -- <tool>` — <버전>
+
+## 포인터 참조
+
+- **MSBuild**: VS 설정 참조 (`tools/vs<버전>.md`)
+```
+
+- "사용 가능 툴" 에는 호출 명령과 버전을 함께 기록한다.
+- "사용 불가 툴" 이 하나도 없으면 해당 섹션에 "(없음)" 으로 명시한다(섹션 자체는 생략하지 않음).
+- "WSL 경유" 섹션은 Windows 플랫폼이 아니거나 해당 항목이 없으면 생략한다.
+- "포인터 참조" 섹션은 해당 플랫폼에 포인터 항목이 없으면 생략한다.
+
+### 매니페스트
+
+- `environment.md` 는 장비별 동적 생성물이므로 저장소 소스 해시 기반 검증 대상이 **아니다**.
+- 매니페스트의 `imports` 섹션에 별도 키를 추가하지 않는다.
+- 사용자 편집 감지(해시 비교)를 수행하지 않는다. 로컬 생성물이라는 성격상 재작성 시 조용히 덮어쓰고 사용자에게 "재작성됨" 만 고지한다.
+
+### 설치/갱신 의사결정
+
+- **파일 없음**: 환경 탐지 실행 후 신규 생성.
+- **파일 있음, 일반 설치/업데이트 중**: 건드리지 않는다. 설치 절차를 처음 실행하는 경우가 아니라면 "환경 탐지 갱신 절차" 를 명시적으로 요청해야 재작성된다.
+- **파일 있음, "환경 탐지 갱신 절차" 호출**: 전체 재작성.
+
+### 실행 환경 고려사항
+
+- 탐지 명령은 exit code 로 "있음/없음" 을 판정하고 stdout 에서 버전을 파싱한다.
+- 명령 미존재로 발생하는 에러(`command not found`, `The term ... is not recognized` 등)는 사용자에게 노출하지 않고 "사용 불가" 로만 기록한다.
+- `where`/`command -v` 결과가 여러 개인 경우, 첫 번째(PATH 우선순위가 가장 높은) 항목의 경로와 버전을 기록한다.
+- Python 의 `python` vs `python3`, PowerShell 의 `pwsh` vs `powershell` 처럼 **호출명이 여러 후보** 인 툴은 가장 먼저 발견된 호출명을 대표로 기록하되, 다른 호출명이 함께 존재하면 비고에 함께 표기한다.
