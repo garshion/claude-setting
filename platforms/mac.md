@@ -126,8 +126,16 @@
 
 Unity 프로젝트를 VSCode 등에서 디버깅할 때 필요하다. Unity 가 번들하는 Mono 런타임과 별개로, IDE 의 디버거가 호스트 시스템의 Mono MDK 를 요구하는 경우가 있다.
 
+- **설치 권장 트리거**: VSCode 의 *Visual Studio Tools for Unity* (`vstuc`) 확장이 Mono 미설치 경고를 띄우는 경우. Unity 디버거를 VSCode 에 붙일 계획이면 Mono MDK 가 필요하다. Unity 디버깅을 VSCode 에서 사용하지 않을 거면 vstuc 확장을 비활성화하거나 경고를 무시해도 무방하지만, vstuc 비활성화 시 Unity 의 *External Script Editor* 연동에 영향이 갈 수 있음을 사용자에게 고지한다.
 - **기본 설치**: `brew install --cask mono-mdk`
   - cask 이름은 `mono-mdk` (MDK = Mono Development Kit). Unity/VSCode 디버깅 용도는 이 패키지가 표준이다.
   - macOS 10.15 이상 필요.
+- **사용자 직접 실행 필요**: cask 가 내부적으로 `.pkg` 인스톨러를 `sudo` 로 호출하므로 비대화형 셸에서는 비밀번호 입력이 불가능하여 실패한다. Claude 가 직접 설치할 수 없으므로 사용자에게 터미널에서 직접 `brew install --cask mono-mdk` 실행을 요청한다.
+  - 첫 시도가 sudo 단계에서 실패해도 다운로드는 `~/Library/Caches/Homebrew/downloads/` 에 캐시되므로, 사용자가 같은 명령을 다시 실행하면 즉시 .pkg 설치 단계로 진행된다.
+- **PATH 적용 시점**: 설치 완료 후 `/private/etc/paths.d/mono-commands` 가 추가되지만, `path_helper` 가 새 셸 시작 시에만 PATH 에 반영된다. 기존 터미널/VSCode/Unity 에서는 `mono` 명령이 보이지 않을 수 있으므로 **새 터미널을 열거나 IDE 를 완전 재시작(Cmd+Q)** 하도록 안내한다.
+- **설치 검증**: PATH 미반영 상태에서도 풀패스로 검증할 수 있다.
+  - `/Library/Frameworks/Mono.framework/Versions/Current/Commands/mono --version`
+  - 위 경로는 macOS Frameworks 디렉토리 표준 컨벤션과 Mono 인스톨러의 오랜 관행을 따르므로 사실상 불변이다. 별도 탐색 없이 풀패스를 그대로 사용해도 된다.
+  - cask 는 Homebrew prefix 가 아닌 `/Library/Frameworks/Mono.framework/` 에 설치된다(.pkg 인스톨러 경유). `brew --prefix` 기반 경로 탐색은 통하지 않는다.
 - **`mono` formula 와의 충돌**: `mono-mdk` 설치 시 `/usr/local/bin` (또는 `$(brew --prefix)/bin`) 의 `mono` formula 바이너리가 제거되고 `/private/etc/paths.d/mono-commands` 가 추가된다. 기존에 `brew install mono` 로 formula 버전을 사용 중이었다면 설치 전 사용자에게 고지한다.
 - **Visual Studio for Mac 용 별도 cask**: `mono-mdk-for-visual-studio` 는 VS for Mac 전용 변형이며, Unity/VSCode 목적에는 `mono-mdk` 를 사용한다.
