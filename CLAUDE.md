@@ -4,7 +4,9 @@
 사용자가 환경 설정을 요청하면 아래 절차에 따라 `~/.claude/CLAUDE.md`를 생성합니다.
 
 ## 저장소 구조
-- `common.md` - OS 무관 공통 설정 (코드 규칙, 커뮤니케이션 스타일 등)
+- `common.md` - OS 무관 공통 설정 (커뮤니케이션 스타일, 워크플로우 등)
+- `coding-guidelines.md` - 코딩 가이드라인 (Karpathy 기반 코딩 지침, 컨텍스트/편집 안전 규칙)
+- `conventions/` - 언어별 코드 규칙 (cpp.md, csharp.md 등)
 - `platforms/` - OS별 설정 (windows.md, mac.md 등)
 - `tools/` - 개발 도구별 설정 (vs2022.md, vs2026.md 등). `{{에디션}}` 플레이스홀더를 실제 값으로 치환하여 사용
 - `skills/` - Claude Code skill 소스. 각 하위 디렉토리(`<skill-name>/SKILL.md` 등)가 `~/.claude/skills/<skill-name>/` 로 설치됨
@@ -39,6 +41,8 @@
 - 공통/플랫폼/도구별 지침을 연결(concat)하지 않고, `@` 임포트로 모듈화하여 설치한다.
 - 설치 대상 구조:
   - `~/.claude/imports/claude-setting/common.md` ← 저장소 `common.md` 복사
+  - `~/.claude/imports/claude-setting/coding-guidelines.md` ← 저장소 `coding-guidelines.md` 복사
+  - `~/.claude/imports/claude-setting/conventions/<lang>.md` ← 저장소 `conventions/<lang>.md` 복사
   - `~/.claude/imports/claude-setting/platforms/<os>.md` ← 저장소 `platforms/<os>.md` 복사
   - `~/.claude/imports/claude-setting/environment.md` ← 3단계 환경 탐지 결과로 동적 생성
   - `~/.claude/imports/claude-setting/tools/<tool>.md` ← 저장소 `tools/<tool>.md` 의 플레이스홀더 치환 완료본
@@ -390,6 +394,9 @@ skill의 각 내부 파일 또는 command 단일 파일에 대해:
 └── imports/
     └── claude-setting/
         ├── common.md                     common.md 원본 복사
+        ├── coding-guidelines.md          코딩 가이드라인 원본 복사
+        ├── conventions/
+        │   └── <lang>.md                 언어별 코드 규칙 원본 복사
         ├── environment.md                장비별 환경 탐지 결과 (동적 생성, 저장소 원본 없음)
         ├── platforms/
         │   └── <os>.md                   선택된 플랫폼 파일 원본 복사
@@ -423,18 +430,20 @@ skill의 각 내부 파일 또는 command 단일 파일에 대해:
 사용자 고유 지침은 `~/.claude/CLAUDE.md` 에 작성하십시오.
 
 @imports/claude-setting/common.md
+@imports/claude-setting/coding-guidelines.md
+@imports/claude-setting/conventions/<lang>.md
 @imports/claude-setting/platforms/<os>.md
 @imports/claude-setting/environment.md
 @imports/claude-setting/tools/<tool>.md
 ```
 
-- 임포트 순서는 `common` → `platforms/<os>` → `environment` → `tools/<tool>`.
+- 임포트 순서는 `common` → `coding-guidelines` → `conventions/<lang>` → `platforms/<os>` → `environment` → `tools/<tool>`.
 - `environment.md` 는 장비별 생성물이지만 집약 파일에는 고정 라인으로 포함한다. 파일이 없으면 Claude Code 가 경고할 수 있으므로 설치 시점에 반드시 함께 생성한다.
 - 도구/플랫폼이 여러 개 선택된 경우 각각 한 줄씩.
 
 ### 플레이스홀더 치환
 
-- `common.md`, `platforms/*.md` 는 원본을 그대로 복사.
+- `common.md`, `coding-guidelines.md`, `conventions/*.md`, `platforms/*.md` 는 원본을 그대로 복사.
 - `tools/*.md` 는 설치 시점에 `{{에디션}}` 등 플레이스홀더를 탐지된 값으로 치환한 후 복사. 치환된 바이트가 설치 대상.
 
 ### 매니페스트
@@ -450,6 +459,14 @@ skill의 각 내부 파일 또는 command 단일 파일에 대해:
   "imports": {
     "common.md": {
       "target": "imports/claude-setting/common.md",
+      "hash": "<sha256>"
+    },
+    "coding-guidelines.md": {
+      "target": "imports/claude-setting/coding-guidelines.md",
+      "hash": "<sha256>"
+    },
+    "conventions/cpp.md": {
+      "target": "imports/claude-setting/conventions/cpp.md",
       "hash": "<sha256>"
     },
     "platforms/windows.md": {
