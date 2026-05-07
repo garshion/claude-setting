@@ -83,3 +83,10 @@
   - 동적 import 및 require() 호출
   - re-export 및 barrel 파일
   - 테스트 파일 및 mock
+
+# 언어별 코드 규칙
+
+언어별 네이밍·스타일 규칙은 아래 파일에 있다. 해당 언어로 작업할 때 파일을 읽고 규칙을 참조할 것.
+
+- **C++**: `~/.claude/imports/claude-setting/conventions/cpp.md`
+- **C#**: `~/.claude/imports/claude-setting/conventions/csharp.md`

@@ -42,7 +42,7 @@
 - 설치 대상 구조:
   - `~/.claude/imports/claude-setting/common.md` ← 저장소 `common.md` 복사
   - `~/.claude/imports/claude-setting/coding-guidelines.md` ← 저장소 `coding-guidelines.md` 복사
-  - `~/.claude/imports/claude-setting/conventions/<lang>.md` ← 저장소 `conventions/<lang>.md` 복사
+  - `~/.claude/imports/claude-setting/conventions/<lang>.md` ← 저장소 `conventions/<lang>.md` 복사 (집약 파일에는 포함하지 않음. `coding-guidelines.md`의 포인터로 참조)
   - `~/.claude/imports/claude-setting/platforms/<os>.md` ← 저장소 `platforms/<os>.md` 복사
   - `~/.claude/imports/claude-setting/environment.md` ← 3단계 환경 탐지 결과로 동적 생성
   - `~/.claude/imports/claude-setting/tools/<tool>.md` ← 저장소 `tools/<tool>.md` 의 플레이스홀더 치환 완료본
@@ -92,6 +92,10 @@
 - 상세 규칙은 "CLAUDE.md 모듈 설치 세부 규칙" 을 따른다.
 - `environment.md` 가 존재하지 않으면 설치 절차 3단계에 준해 환경 탐지를 수행하여 새로 생성한다. 이미 존재하면 건드리지 않는다(명시적 "툴 상황 업데이트해줘" 요청 시에만 재작성; "환경 탐지 갱신 절차" 참조).
 - 기존 연결(concat) 방식이 감지되면 "전환 절차" 를 사용자에게 제안한다.
+- **신규 파일 감지 규칙**: 저장소에 있으나 매니페스트에 없는 파일이 발견된 경우:
+  - `common.md`, `coding-guidelines.md` 등 필수 파일: 자동 설치.
+  - `conventions/<lang>.md`: 필수 설치. 매니페스트에 없으면 자동 설치하고 매니페스트에 등록.
+  - `platforms/<os>.md`, `tools/<tool>.md`: 기존 설치 목록에 해당하는 것만 갱신. 새 OS/도구 추가는 사용자에게 확인.
 
 ### 3단계: Skills/Commands 갱신
 - 설치 절차의 6단계와 동일하게 `skills/`, `commands/` 소스를 `~/.claude/skills/`, `~/.claude/commands/` 에 반영한다.
@@ -431,13 +435,13 @@ skill의 각 내부 파일 또는 command 단일 파일에 대해:
 
 @imports/claude-setting/common.md
 @imports/claude-setting/coding-guidelines.md
-@imports/claude-setting/conventions/<lang>.md
 @imports/claude-setting/platforms/<os>.md
 @imports/claude-setting/environment.md
 @imports/claude-setting/tools/<tool>.md
 ```
 
-- 임포트 순서는 `common` → `coding-guidelines` → `conventions/<lang>` → `platforms/<os>` → `environment` → `tools/<tool>`.
+- 임포트 순서는 `common` → `coding-guidelines` → `platforms/<os>` → `environment` → `tools/<tool>`.
+- `conventions/<lang>.md`는 집약 파일에 포함하지 않는다. `coding-guidelines.md`의 포인터 섹션을 통해 작업 시 직접 참조한다.
 - `environment.md` 는 장비별 생성물이지만 집약 파일에는 고정 라인으로 포함한다. 파일이 없으면 Claude Code 가 경고할 수 있으므로 설치 시점에 반드시 함께 생성한다.
 - 도구/플랫폼이 여러 개 선택된 경우 각각 한 줄씩.
 
