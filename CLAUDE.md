@@ -73,7 +73,21 @@
 - 상세 규칙은 이 문서 하단의 "Permissions 설치 세부 규칙"을 따른다.
 - `README.md` 등 설치 대상이 아닌 파일은 제외한다 (상세 규칙 참조).
 
-### 9단계: 결과 보고
+### 9단계: 환경 변수 적용
+- `~/.claude/settings.json` 의 `env` 섹션에 아래 값을 병합한다. 키가 이미 존재하면 값을 덮어쓴다.
+  ```json
+  {
+    "env": {
+      "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+      "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+    }
+  }
+  ```
+- `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1` 은 텔레메트리·에러 리포팅·버그 커맨드·자동 업데이터를 일괄 비활성화한다.
+- `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` 은 Agent Teams 기능을 활성화한다 (Opus 4.6 전용, 리서치 프리뷰).
+- 다른 `env` 항목은 건드리지 않는다.
+
+### 10단계: 결과 보고
 - 적용된 설정 요약을 사용자에게 보고한다 (OS, 탐지된 도구, 에디션, 경로, 탐지된 환경 툴, 설치/갱신된 skill·command·hook·permission 개수 등).
 
 ## 업데이트 절차
@@ -109,7 +123,10 @@
 - 설치 절차의 8단계와 동일하게 `permissions/` 소스를 `~/.claude/settings.json` 의 `permissions` 섹션에 반영한다.
 - 상세 규칙은 "Permissions 설치 세부 규칙" 을 따른다.
 
-### 6단계: 결과 보고
+### 6단계: 환경 변수 갱신
+- 설치 절차의 9단계와 동일하게 `~/.claude/settings.json` 의 `env` 섹션을 갱신한다.
+
+### 7단계: 결과 보고
 - 변경된 내용을 요약하여 사용자에게 보고한다 (갱신된 skill·command·hook·permission 포함). 변경사항이 없으면 "이미 최신 상태"임을 안내한다.
 
 ## 환경 탐지 갱신 절차
