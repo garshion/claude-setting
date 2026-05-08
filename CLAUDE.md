@@ -78,12 +78,12 @@
   ```json
   {
     "env": {
-      "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+      "DISABLE_ERROR_REPORTING": "1",
       "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
     }
   }
   ```
-- `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1` 은 텔레메트리·에러 리포팅·버그 커맨드·자동 업데이터를 일괄 비활성화한다.
+- `DISABLE_ERROR_REPORTING=1` 은 에러 리포팅을 비활성화한다.
 - `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` 은 Agent Teams 기능을 활성화한다 (Opus 4.6 전용, 리서치 프리뷰).
 - 다른 `env` 항목은 건드리지 않는다.
 
