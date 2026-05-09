@@ -37,6 +37,7 @@ tools/
   vs2026.md            # Visual Studio 2026 설정
 skills/
   codebase/            # /codebase — 프로젝트 코드베이스 인덱스 생성·갱신
+  review-csharp/       # /review-csharp — C# 변경분 다축 코드 리뷰 (안정성·동시성·보안·컨벤션·테스트·명세)
 hooks/
   websearch-allow.json # WebSearch 자동 허용 훅
 permissions/
