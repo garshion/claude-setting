@@ -41,11 +41,11 @@
 - 공통/플랫폼/도구별 지침을 연결(concat)하지 않고, `@` 임포트로 모듈화하여 설치한다.
 - 설치 대상 구조:
   - `~/.claude/imports/claude-setting/common.md` ← 저장소 `common.md` 복사
-  - `~/.claude/imports/claude-setting/coding-guidelines.md` ← 저장소 `coding-guidelines.md` 복사
+  - `~/.claude/imports/claude-setting/coding-guidelines.md` ← 저장소 `coding-guidelines.md` 복사 (집약 파일에는 포함하지 않음. `common.md` 의 "작업 유형별 추가 참조" 섹션에서 포인터로 참조)
   - `~/.claude/imports/claude-setting/conventions/<lang>.md` ← 저장소 `conventions/<lang>.md` 복사 (집약 파일에는 포함하지 않음. `coding-guidelines.md`의 포인터로 참조)
-  - `~/.claude/imports/claude-setting/platforms/<os>.md` ← 저장소 `platforms/<os>.md` 복사
+  - `~/.claude/imports/claude-setting/platforms/<os>.md` ← 저장소 `platforms/<os>.md` 복사 (집약 파일에는 포함하지 않음. 설치 절차 2/3단계 및 "환경 탐지 갱신 절차" 에서 포인터로 참조)
   - `~/.claude/imports/claude-setting/environment.md` ← 3단계 환경 탐지 결과로 동적 생성
-  - `~/.claude/imports/claude-setting/tools/<tool>.md` ← 저장소 `tools/<tool>.md` 의 플레이스홀더 치환 완료본
+  - `~/.claude/imports/claude-setting/tools/<tool>.md` ← 저장소 `tools/<tool>.md` 의 플레이스홀더 치환 완료본 (집약 파일에는 포함하지 않음. `environment.md` 의 "포인터 참조" 섹션에서 빌드 도구별 파일 경로를 안내)
   - `~/.claude/claude-setting.md` ← 저장소가 전담 관리하는 임포트 집약 파일
   - `~/.claude/CLAUDE.md` ← 사용자 파일. `@claude-setting.md` 한 줄만 보장, 그 외는 사용자 소유.
 - 상세 규칙은 이 문서 하단의 "CLAUDE.md 모듈 설치 세부 규칙" 을 따른다.
@@ -451,16 +451,15 @@ skill의 각 내부 파일 또는 command 단일 파일에 대해:
 사용자 고유 지침은 `~/.claude/CLAUDE.md` 에 작성하십시오.
 
 @imports/claude-setting/common.md
-@imports/claude-setting/coding-guidelines.md
-@imports/claude-setting/platforms/<os>.md
 @imports/claude-setting/environment.md
-@imports/claude-setting/tools/<tool>.md
 ```
 
-- 임포트 순서는 `common` → `coding-guidelines` → `platforms/<os>` → `environment` → `tools/<tool>`.
-- `conventions/<lang>.md`는 집약 파일에 포함하지 않는다. `coding-guidelines.md`의 포인터 섹션을 통해 작업 시 직접 참조한다.
+- 임포트 순서는 `common` → `environment`.
+- `coding-guidelines.md` 는 집약 파일에 포함하지 않는다. `common.md` 의 "작업 유형별 추가 참조" 섹션에서 포인터로 참조되며, 코딩 작업 시 직접 읽도록 한다.
+- `conventions/<lang>.md` 는 집약 파일에 포함하지 않는다. `coding-guidelines.md` 의 "언어별 코드 규칙" 섹션을 통해 작업 시 직접 참조한다.
+- `platforms/<os>.md` 는 집약 파일에 포함하지 않는다. 설치 절차 2/3단계 및 "환경 탐지 갱신 절차" 에서 직접 참조하며, 도구 설치·환경 탐지 작업 시 해당 섹션을 읽도록 한다.
+- `tools/<tool>.md` 는 집약 파일에 포함하지 않는다. `environment.md` 의 "포인터 참조" 섹션에서 빌드 도구별 파일 경로를 안내하며, 빌드 작업 시 직접 읽도록 한다.
 - `environment.md` 는 장비별 생성물이지만 집약 파일에는 고정 라인으로 포함한다. 파일이 없으면 Claude Code 가 경고할 수 있으므로 설치 시점에 반드시 함께 생성한다.
-- 도구/플랫폼이 여러 개 선택된 경우 각각 한 줄씩.
 
 ### 플레이스홀더 치환
 

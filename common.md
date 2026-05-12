@@ -55,3 +55,10 @@
 **결정:** <채택한 접근 방식과 그 이유>
 **제외:** <명시적으로 이번 범위에서 제외한 항목> (없으면 생략)
 ```
+
+# 작업 유형별 추가 참조
+
+다음 작업을 시작하기 전에 해당 파일을 읽고 규칙을 따를 것:
+
+- **코딩 작업** (코드 작성·수정·리뷰): `~/.claude/imports/claude-setting/coding-guidelines.md`
+- **빌드 도구 사용** (MSBuild 등): `~/.claude/imports/claude-setting/environment.md` 의 "포인터 참조" 섹션에서 도구별 파일 경로 확인 후 해당 파일을 직접 읽을 것.
