@@ -2,7 +2,17 @@
 
 ## 공통 스타일 (C++/C#)
 - **if 다중 조건**: 줄바꿈 후 `&&`/`||`를 다음 줄 앞쪽에 배치할 것.
-- **유효성 검사**: `return 조건1 && 조건2;` 형태의 return 체이닝을 사용하지 말 것. `if (조건) return false; return true;` 형태로 명시적 분기를 사용할 것.
+- **유효성 검사**: `return 조건1 && 조건2;` 형태의 boolean 체이닝 return을 사용하지 말 것. `if (조건) return false; return true;` 형태로 명시적 분기를 사용할 것. 삼항 연산자 return(`return cond ? a : b;`)은 이 규칙에 해당하지 않으며 허용한다. 단, 한 줄이 길어지면 아래 형태로 줄바꿈할 것:
+  ```csharp
+  // 형태 1: 각 요소 줄바꿈
+  return 조건
+      ? ret1
+      : ret2;
+
+  // 형태 2: 조건만 분리
+  return 조건
+      ? ret1 : ret2;
+  ```
 - **enum 네이밍**: `E` 접두사 사용 (예: `EAuthorityLevel`, `EAuthorityCategory`).
 
 ## C# 스타일
