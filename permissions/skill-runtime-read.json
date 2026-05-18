@@ -1,0 +1,6 @@
+{
+  "allow": [
+    "Read({{홈}}/.claude/imports/claude-setting/*)",
+    "Read({{홈}}/.claude/skills/*)"
+  ]
+}
