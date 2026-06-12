@@ -23,7 +23,7 @@ Claude Code 글로벌 설정(`~/.claude/`)을 관리하는 저장소입니다.
 ## 구조
 
 ```
-common.md              # OS 무관 공통 설정 (커뮤니케이션 스타일, 워크플로우 등)
+common.md              # 항상 로드되는 최소 기본 지침
 coding-guidelines.md   # 코딩 가이드라인
 conventions/
   cpp.md               # C++ 코드 규칙
